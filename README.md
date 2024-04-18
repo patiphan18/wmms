@@ -1,4 +1,4 @@
-# wmms  
+# WMMS  
 Waste Map Management System  
 Student Name: Patiphan Pansanga  
 Advisor: Dr. Athitha Onuean  
