@@ -1,0 +1,279 @@
+<%- include('./template/header'); %><%- include('./template/navbar'); %>
+        <style>
+            .filterButton {
+                width: auto;
+                height: auto;
+                background-color: white;
+                position: fixed;
+                top: 95px;
+                left: 25px;
+                z-index: 1;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                padding-left: 12px;
+                padding-right: 12px;
+                font-size: 18px;
+                cursor: pointer;
+                color: #464646;
+                border: 1px solid #e2e2e2;
+                font-weight: 300;
+            }
+
+            .filterList {
+                width: auto;
+                height: auto;
+                background-color: white;
+                position: fixed;
+                top: 150px;
+                left: 25px;
+                z-index: 1;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-left: 15px;
+                padding-right: 15px;
+                display: block;
+            }
+
+            .dot {
+                height: 12px;
+                width: 12px;
+                background-color: #bbb;
+                border-radius: 50%;
+                display: inline-block;
+            }
+
+            .menuAddDesktop {
+                width: 350px;
+                height: auto;
+                background-color: white;
+                position: fixed;
+                top: 80px;
+                left: 300px;
+                z-index: 1;
+                padding: 10px;
+                color: #3D9700;
+                display: none;
+            }
+
+            .menuAddMobile {
+                width: 150px;
+                height: auto;
+                background-color: white;
+                position: fixed;
+                top: 80px;
+                left: 300px;
+                z-index: 1;
+                padding: 10px;
+                color: #3D9700;
+                display: none;
+            }
+
+            .menuAdd {
+                text-align: center; 
+                background-color: #E8FCDB;
+                cursor: pointer;
+            }
+        </style>
+        <div class="filterButton rounded shadow" onclick="displayFilterList()"><i class="bi bi-filter-circle"></i> <span class="ps-2">Type filter</span></div>
+        <div class="filterList rounded shadow">
+            <% for(var i=0; i < filterData.length; i++) { %>
+            <div class="form-check my-1">
+                <input class="form-check-input filterCheck" name="filterCheck" style="cursor: pointer;" type="checkbox" value="" id="<%- filterData[i].id %>" checked>
+                <label class="form-check-label" style="cursor: pointer;" for="<%- filterData[i].id %>">
+                    <span class="dot me-2 ms-1" style="background-color: <%- filterData[i].color %>;"></span><%- filterData[i].name %>
+                </label>
+            </div>
+            <% } %>
+        </div>
+        <div class="menuAddDesktop rounded shadow">
+            <div class="row">
+                <div class="col-2"><i class="bi bi-geo-alt" style="font-size: 40px;"></i></div>
+                <div class="col-10" style="color: black;">
+                    <div style="font-size: 18px;">Add New</div>
+                    <div style="font-size: 10px;">Latitude: <span class="newLat"></div>
+                    <div style="font-size: 10px;"></span> Longitude: <span class="newLon"></span></div>
+                </div>
+            </div>
+            <input type="hidden" id="newLat">
+            <input type="hidden" id="newLon">
+            <div class="row mx-1">
+                <div class="col m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalAddBin()">
+                        <i class="bi bi-trash" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Add Bin</div>
+                    </div>
+                </div>
+                <div class="col m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalGarbageStep()">
+                        <i class="bi bi-bar-chart-steps" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Garbage Step</div>
+                    </div>
+                </div>
+                <div class="col m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalFoundGarbage()">
+                        <i class="bi bi-zoom-in" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Found Garbage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menuAddMobile rounded shadow">
+            <div class="row">
+                <div class="col-4"><i class="bi bi-geo-alt" style="font-size: 40px;"></i></div>
+                <div class="col-8" style="color: black;">
+                    <div style="font-size: 14px;">Add New</div>
+                    <div style="font-size: 7px;">Latitude: <span class="newLat"></div>
+                    <div style="font-size: 7px;"></span> Longitude: <span class="newLon"></span></div>
+                </div>
+            </div>
+            
+            <div class="row mx-1">
+                <div class="col-12 m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalAddBin()">
+                        <i class="bi bi-trash" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Add Bin</div>
+                    </div>
+                </div>
+                <div class="col-12 m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalGarbageStep()">
+                        <i class="bi bi-bar-chart-steps" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Garbage Step</div>
+                    </div>
+                </div>
+                <div class="col-12 m-0 p-1">
+                    <div class="rounded p-2 menuAdd" onclick="modalFoundGarbage()">
+                        <i class="bi bi-zoom-in" style="font-size: 14px;"></i>
+                        <div style="font-size: 10px;">Found Garbage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <script>
+            function modalEditBin(id) {
+                $.ajax({
+                    url: baseURL + "/bin/getModalEdit",
+                    contentType: 'application/json',
+                    method: "post",
+                    data: JSON.stringify({
+                        id: id
+                    }),
+                }).done(function(res) {
+                    $('#mainModal').html(res);
+                    $('#mainModal').modal('show');
+                });
+            }
+            
+            function displayFilterList() {
+                if($('.filterList').css('display') == 'none') {
+                    localStorage.setItem("filterMenu", 1);
+                    $('.filterList').css('display', 'block');
+                } else {
+                    localStorage.setItem("filterMenu", 0);
+                    $('.filterList').css('display', 'none');
+                }
+            }
+
+            function defaultFilter() {
+                var isShow = localStorage.getItem("filterMenu");
+                if(isShow == 1 || isShow == null) {
+                    $('.filterList').css('display', 'block');
+                } else {
+                    $('.filterList').css('display', 'none');
+                }
+                var filterList = localStorage.getItem("filterList");
+                if(filterList == null) return;
+                $('.filterCheck').each(function () {
+                    var index = filterList.indexOf(this.id);
+                    if(index != -1) {
+                        $('#'+this.id).prop('checked', true);
+                    } else {
+                        $('#'+this.id).prop('checked', false);
+                    }
+                });
+            }
+            defaultFilter();
+
+            $('.filterCheck').click(function(e) {
+                var str = "";
+                $('.filterCheck').each(function () {
+                    if(this.checked) str += this.id + "-";
+                });
+                if(str != "") {
+                    str = str.substring(0, str.length-1);
+                } else {
+                    str = null;
+                }
+                localStorage.setItem("filterList", str);
+                init();
+            });
+
+            function modalAddBin() {
+                $.ajax({
+                    url: baseURL + "/bin/getModal",
+                    contentType: 'application/json',
+                    method: "post",
+                    data: JSON.stringify({
+                        lat: $('#newLat').val(),
+                        lon: $('#newLon').val()
+                    }),
+                }).done(function(res) {
+                    $('#mainModal').html(res);
+                    $('#mainModal').modal('show');
+                });
+            }
+
+            function modalGarbageStep() {
+                $.ajax({
+                    url: baseURL + "/garbage/getModalStep",
+                    contentType: 'application/json',
+                    method: "post",
+                    data: JSON.stringify({
+                        lat: $('#newLat').val(),
+                        lon: $('#newLon').val(),
+                        foundID: 0
+                    }),
+                }).done(function(res) {
+                    if(res.status == 0) location.replace(baseURL + "/login");
+                    $('#mainModal').html(res);
+                    $('#mainModal').modal('show');
+                });
+            }
+
+            function modalClearGarbageFound(lat, lon, foundID) {
+                $.ajax({
+                    url: baseURL + "/garbage/getModalStep",
+                    contentType: 'application/json',
+                    method: "post",
+                    data: JSON.stringify({
+                        lat: lat,
+                        lon: lon,
+                        foundID: foundID
+                    }),
+                }).done(function(res) {
+                    if(res.status == 0) location.replace(baseURL + "/login");
+                    $('#mainModal').html(res);
+                    $('#mainModal').modal('show');
+                });
+            }
+
+            function modalFoundGarbage() {
+                $.ajax({
+                    url: baseURL + "/garbage/getModalFound",
+                    contentType: 'application/json',
+                    method: "post",
+                    data: JSON.stringify({
+                        lat: $('#newLat').val(),
+                        lon: $('#newLon').val()
+                    }),
+                }).done(function(res) {
+                    $('#mainModal').html(res);
+                    $('#mainModal').modal('show');
+                });
+            }
+
+        </script>
+        <%- include('./template/footer'); %>

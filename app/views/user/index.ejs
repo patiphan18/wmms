@@ -1,0 +1,102 @@
+<%- include('../template/header'); %><%- include('../template/navbar'); %>
+<style>
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .headerTabText {
+        flex-grow: 0;
+        color: #7f7f7f;
+        font-size: 18px;
+        border-bottom: 2px solid #D9D9D9;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .headerTabText:hover {
+        color: #1890FF;
+    }
+
+    .headerTabLine {
+        top: 2px;
+        flex-grow: 1;
+        height: 2px;
+        margin-top: 27px;
+        margin-left: -200px;
+        background-color: #D9D9D9;
+    }
+    .tabActive {
+        color: #1890FF;
+    }
+</style>
+<div class="px-5">
+    <div class="header pt-4">
+        <div class="headerTabText" id="tabProfile" onclick="clickTab('tabProfile')">Profile Data</div>
+        <div class="headerTabText ms-4" id="tabPassword" onclick="clickTab('tabPassword')">Change Password</div>
+        <div class="headerTabLine"></div>
+    </div>
+    <div id="content" class="pt-4"></div>
+    <div style="width: 100%; margin-top: 10%;" class="text-center d-none" id="loader">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+</div>
+
+<script>
+    function clickTab(id) {
+        $('.headerTabText').removeClass('tabActive');
+        if(id == 'tabProfile') {
+            window.location = baseURL + '/user';
+        } else {
+            window.location = baseURL + '/user/changePassword';
+        }
+    } 
+
+    function loadProfile() {
+        $('#tabProfile').addClass('tabActive');
+        $('#tabProfile').attr('borderColor', '#1890FF');
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/user/getProfile",
+            method: "post",
+        }).done(function (res) {
+            $('#content').html(res);
+            $('#content').removeClass('d-none');
+            $('#loader').addClass('d-none');
+        });
+    }
+
+    function loadChangePassword() {
+        $('#tabPassword').addClass('tabActive');
+        $('#tabPassword').attr('borderColor', '#1890FF');
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/user/getPasswordForm",
+            method: "post",
+        }).done(function (res) {
+            $('#content').html(res);
+            $('#content').removeClass('d-none');
+            $('#loader').addClass('d-none');
+        });
+    }
+
+    function checkTab() {
+        if(window.location.pathname == "/user" || window.location.pathname == "/wastemapbuu/user") {
+            $('.headerText').css('border-color', '#D9D9D9');
+            $('#tabProfile').css('border-color', '#1890FF');
+            loadProfile();
+        } else {
+            $('.headerText').css('border-color', '#D9D9D9');
+            $('#tabPassword').css('border-color', '#1890FF');
+            loadChangePassword();
+        }
+    }
+    checkTab();
+</script>
+
+<%- include('../template/footer'); %>

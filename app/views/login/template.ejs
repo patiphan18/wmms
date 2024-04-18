@@ -1,0 +1,91 @@
+<%- include('../template/header'); %>
+    <style>
+        input {
+            background-color: rgba(75, 75, 75, 0.5) !important;
+            backdrop-filter: blur(2px) !important;
+            border-color: #A9D18E !important;
+            color: white !important;
+        }
+
+        ::placeholder {
+            color: white !important;
+            opacity: 1 !important;
+        }
+
+        ::-ms-input-placeholder {
+            color: white !important;
+            opacity: 1 !important;
+        }
+
+        .input-group-text {
+            background-color: rgba(75, 75, 75, 0.5) !important;
+            /* backdrop-filter: blur(2px) !important; */
+            cursor: pointer;
+            border-left: none;
+            color: white;
+            border-color: #A9D18E;
+        }
+
+        #password, #cfPassword {
+            border-right: none !important;
+        }
+
+        .cardForm {
+            border-radius: 15px;
+            background-color: rgba(75, 75, 75, 0.63);
+            /* backdrop-filter: blur(5px); */
+            width: 400px;
+        }
+
+        .btnSubmit {
+            background-color: #A9D18E;
+            color: #2A6800;
+        }
+
+        .btnSubmit:hover {
+            background-color: #9ac67d;
+        }
+
+        .linkPage {
+            text-decoration: none;
+            color: #A9D18E;
+        }
+
+        .linkPage:hover {
+            color: #9ac67d;
+        }
+
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/images/bg-login2.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-color: #728195;
+        }
+
+        .text-head {
+            color: white;
+        }
+
+        .msgAccount {
+            font-size: 12px; 
+            color: white;
+        }
+
+        .projectName {
+            font-size: 100px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        
+        @media only screen and (max-width: 1300px) {
+            .d-sm-block {
+                display: none !important;
+            }
+            .col-md-6 {
+                width: 100%;
+            }
+        }
+        
+    </style>

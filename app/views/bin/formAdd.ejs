@@ -1,0 +1,381 @@
+<style>
+    .inputFile {
+        width: auto;
+        height: 180px;
+        border: 2px dotted #3D9700;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 30px;
+    }
+    .rm {
+        cursor: pointer;
+        color: #EF2305;
+        display: inline-block;
+        margin: -15px;
+        font-size: 22px;
+        line-height: 0px;
+        background-color: #FDDEDA;
+        border-radius: 15px;
+        width: auto;
+        padding: 4px 3px 2px 3px;
+    }
+    .rm:hover {
+        background-color: #ffd1cb;
+    }
+    .preview {
+        display: flex;
+        justify-content: center;
+        padding-right: 10px;
+    }
+    .imgPreview {
+        display: flex;
+        align-items: flex-start;
+        border: 2px solid #D9D9D9;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .header {
+        display:flex;
+        flex-direction:row;
+        align-items: center;
+    }
+    .headerText {
+        flex-grow: 0;
+        color: #3D9700;
+        font-size: 22px;
+    }
+
+    .headerLine {
+        flex-grow: 1;
+        height: 2px;
+        margin-left: 10px;
+        background-color: #3D9700;
+    }
+    .form-check-input, .form-check-label {
+        cursor: pointer;
+    }
+    #boxAddBin {
+        height: 173px; 
+        cursor: pointer;
+    }
+    .binImg {
+        width: 100%; 
+        height: 150px; 
+        object-fit: cover;
+    }
+    .bi-plus {
+        font-size: 125px; 
+        color: #3D9700; 
+        line-height: 0px;
+    }
+    .bi-trash {
+        color: #3D9700;
+    }
+    .textAlert {
+        color: #E91312;
+    }
+    .textAlertImg {
+        font-size: 12px;
+        line-height: 40px;
+    }
+</style>
+<div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5"><i class="bi bi-trash"></i> Add Bin</h1>
+            <button type="button" class="btn-close btnCancel" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addBinForm">
+                <div class="row">
+                    <div class="header mb-2">
+                        <div class="headerText">Detail</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3 checkbox-group required">
+                            <label for="type" class="form-label">Waste Bin Type <sup class="textAlert">*</sup></label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="general" value="General Waste" required>
+                                <label class="form-check-label" for="general"><img src="" id="imgBin1" width="17px" alt=""> General Bin</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="compostable" value="Compostable Waste">
+                                <label class="form-check-label" for="compostable"><img src="" id="imgBin2" width="17px" alt=""> Compostable Bin</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="recycle" value="Recycle Waste">
+                                <label class="form-check-label" for="recycle"><img src="" id="imgBin3" width="17px" alt=""> Recycle Bin</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="hazardous" value="Hazardous Waste">
+                                <label class="form-check-label" for="hazardous"><img src="" id="imgBin4" width="17px" alt=""> Hazardous Bin</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="latitude" value="<%- lat %>" required disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="longitude" value="<%- lon %>" required disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title <sup class="textAlert">*</sup></label>
+                            <input type="text" class="form-control" id="title" required placeholder="Ex. ถังขยะริมหาดวอน">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="location" class="form-label" for="affiliation">Affiliation <sup class="textAlert">*</sup></label>
+                            <select class="form-select" id="affiliation" required>
+                                <option value="municipality" selected>Municipality</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location <sup class="textAlert">*</sup></label>
+                            <input type="text" class="form-control" id="location" required placeholder="Ex. อยู่ริมหาดวอน ตรงข้ามร้าน...">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <input type="file" id="image" class="d-none">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description <sup class="textAlert">*</sup></label>
+                            <textarea class="form-control" placeholder="Ex. มีทั้งหมด 2 ถัง และ..." id="description"  maxlength="150" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="header">
+                        <div class="headerText">Photo <span class="textAlert textAlertImg">*maximum 5 photos</span></div>
+                        
+                    </div>
+                    <div class="col-12">
+                        <input type="file" id="imageAddBin" class="d-none" multiple accept=".png, .jpeg, .jpg, .webp">               
+                        <div id="preview" class=" row g-2 d-none">
+                            
+                        </div>
+                        <span class="imgPreview d-none" id="boxAddBin"></span>
+                        <div class="inputFile p-2" id="inputFile" onclick="document.getElementById('imageAddBin').click()">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 120px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="d-none" id="btnAddBin"></button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btnCancel">Cancel</button>
+            <button type="submit" class="btn btn-primary" onclick="document.getElementById('btnAddBin').click()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var countImg = 0;
+
+    function loadIconBin() {
+        $('#imgBin1').attr('src', baseURL + '/static/images/bin1.png');
+        $('#imgBin2').attr('src', baseURL + '/static/images/bin2.png');
+        $('#imgBin3').attr('src', baseURL + '/static/images/bin3.png');
+        $('#imgBin4').attr('src', baseURL + '/static/images/bin4.png');
+    }
+
+    loadIconBin();
+
+    function deleteImage(name) {
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/deleteImage",
+            method: "post",
+            data: JSON.stringify({
+                fileName: name,
+                folder: "temp"
+            }),
+        }).done(function (res) {
+            if (res.status == 1) {
+                document.getElementById(name).remove();
+                countImg--;
+                if(countImg < 5) {
+                    var btn = `<div class="col-md-4 col-sm-12" id="boxAddBin" onclick="document.getElementById('imageAddBin').click();">
+                                    <div class="imgPreview d-flex justify-content-center">
+                                        <div class="row">
+                                            <div class="col-12 text-center"><i class="bi bi-plus"></i></div>
+                                            <div class="col-12 text-center text-secondary">Upload</div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    var boxAddBin = $('#boxAddBin').html();
+                    console.log(boxAddBin);
+                    var html = $("#preview").html();
+                    if(!boxAddBin) {
+                        $("#preview").html(html + btn);
+                    } 
+                } 
+                if(countImg == 0) {
+                    $("#inputFile").removeClass("d-none");
+                    $("#preview").addClass("d-none");
+                } else {
+                    $("#preview").removeClass("d-none");
+                    $("#inputFile").addClass("d-none");
+                }
+            } 
+        });
+       
+    }
+
+    $('.btnCancel').click(function(e) {
+        var boxAddBin = document.getElementById("boxAddBin");
+        if(boxAddBin) boxAddBin.remove();
+        for(let i=0; i<5; i++) {
+            if($('.imgData')[i]) {
+                // console.log(imgData.id);
+                $.ajax({
+                    contentType: 'application/json',
+                    url: baseURL + "/deleteImage",
+                    method: "post",
+                    data: JSON.stringify({
+                        fileName: $('.imgData')[i].id,
+                        folder: "temp"
+                    }),
+                }).done(function (res) {
+                    if (res.status == 1) {
+
+                    } 
+                });
+            }
+        }
+        $('#mainModal').modal('hide');
+        $('#mainModal').html('');
+    })
+
+    $('#imageAddBin').change(async function (e) {
+        var file = document.getElementById('imageAddBin').files;
+        var formData = new FormData();
+        if(file == null) return;
+        Object.keys(file).forEach(key => { 
+            if(countImg < 5) {
+                formData.append(file.item(key).name, file.item(key));
+                countImg++;
+            }
+        })
+        
+        if(formData == null) return;
+        
+        formData.append('id', 0);
+        var response = await fetch(baseURL + '/upload', {
+            method: 'POST',
+            body: formData
+        })
+
+        var res = await response.json();
+        var boxAddBin = document.getElementById("boxAddBin");
+        if(boxAddBin) boxAddBin.remove();
+        var btn = `<div class="col-md-4 col-sm-12" id="boxAddBin" onclick="document.getElementById('imageAddBin').click();">
+                    <div class="imgPreview d-flex justify-content-center">
+                        <div class="row">
+                            <div class="col-12 text-center"><i class="bi bi-plus"></i></div>
+                            <div class="col-12 text-center text-secondary">Upload</div>
+                        </div>
+                    </div></div>`;
+        var html = "";
+        var preview = $("#preview").html();
+        if (res.status == 1) {
+            for(let i=0; i<res.data.length; i++) {
+                html += `<div class="col-md-4 col-sm-12 imgData" id="`+ res.data[i] +`"><div class="imgPreview d-flex justify-content-center"><img src="uploads/temp/`+ res.data[i] +`" alt="" class="binImg"><span onclick="deleteImage('`+res.data[i]+`')" class="rm"><i class="bi bi-x"></i></span></div></div>`;
+            }
+            if(countImg < 5) {
+                html += btn;
+            }
+            $("#preview").html(preview + html);
+        } 
+        $("#preview").removeClass("d-none");
+        $("#inputFile").addClass("d-none");
+        $('#imageAddBin').val(null);
+        // document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0])
+    });
+
+    $('input[name=type]').click(function(e) {
+        if($('div.checkbox-group.required :checkbox:checked').length > 0) {
+            $('#general').removeAttr('required');
+        } else {
+            $("#general").prop('required',true);
+        }
+    });
+
+
+    $('#addBinForm').submit(async function (e) {
+        e.preventDefault();
+        var arrImage = [];
+        for(let i=0; i<5; i++) {
+            if($('.imgData')[i]) {
+                arrImage.push($('.imgData')[i].id);
+            }
+        }
+        // console.log($('.imgData')[0]);
+        // var myFiles = document.getElementById('image').files
+        var lat = $('#latitude').val();
+        var lon = $('#longitude').val();
+        var title = $('#title').val();
+        var affiliation = $('#affiliation').val();
+        var lo = $('#location').val();
+        var type = "";
+        var description = $('#description').val();
+        
+        if($('div.checkbox-group.required :checkbox:checked').length < 1) {
+            return;
+        }
+
+        $('input[name=type]').each(function () {
+            if(this.checked) type += $(this).val() + "-";
+        });
+        type = type.substring(0, type.length-1);
+        
+        // var file = document.getElementById('imageAddBin').files;
+        var formData = new FormData();
+        if(arrImage.length < 1) {
+            $("#inputFile").css('border-color', '#E91312');
+            return;
+        }
+        
+        // Object.keys(file).forEach(key => {
+        //     formData.append(file.item(key).name, file.item(key))
+        // })
+        
+        formData.append('arrImage', arrImage);
+        formData.append('lat', lat);
+        formData.append('lon', lon);
+        formData.append('title', title);
+        formData.append('affiliation', affiliation);
+        formData.append('location', lo);
+        formData.append('type', type);
+        formData.append('description', description);
+        // Object.keys(myFiles).forEach(key => {
+        //     formData.append(myFiles.item(key).name, myFiles.item(key))
+        // })
+        
+        var response = await fetch(baseURL + '/bin/add', {
+            method: 'POST',
+            body: formData
+        })
+
+        var res = await response.json();
+
+        if (res.status != 0) {
+            location.reload();
+            $('#mainModal').modal('hide');
+            $('#mainModal').html('');
+        } else {
+            alert(res.msg);
+        }
+    });
+</script>

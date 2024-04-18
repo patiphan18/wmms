@@ -1,0 +1,206 @@
+<%- include('../template/header'); %><%- include('../template/navbar'); %>
+<style>
+    .headerTab {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .headerTabText {
+        flex-grow: 0;
+        color: #7f7f7f;
+        font-size: 18px;
+        border-bottom: 2px solid #D9D9D9;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .tabActive {
+        color: #1890FF;
+    }
+
+    .headerTabText:hover {
+        color: #1890FF;
+    }
+
+    .headerTabLine {
+        top: 2px;
+        flex-grow: 1;
+        height: 2px;
+        margin-top: 27px;
+        margin-left: -420px;
+        background-color: #D9D9D9;
+    }
+
+    .imageSize {
+        object-fit: contain; 
+        width: 100%;
+        height: 150px;
+    }
+    #imgDisplay {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .fullNameHead {
+        font-size: 20px;
+    }
+    #fullNameHead {
+        color: #10743B;
+    }
+</style>
+<input type="hidden" id="userIdNow" value="">
+<div class="px-5">
+    <div class="headerTab pt-4">
+        <div class="headerTabText tabActive" id="tabBin" style="border-color: #1890FF;" onclick="clickTab('tabBin')"> <span class="d-none d-sm-block">Bin Report</span><span class="d-block d-sm-none">Bin</span></div>
+        <div class="headerTabText ms-4" id="tabGarbage" onclick="clickTab('tabGarbage')"> <span class="d-none d-sm-block">Garbage Step Report</span><span class="d-block d-sm-none">Garbage</span></div>
+        <div class="headerTabText ms-4" id="tabCollect" onclick="clickTab('tabCollect')"> <span class="d-none d-sm-block">Collect Report</span><span class="d-block d-sm-none">Collect</span></div>
+        <div class="headerTabLine"></div>
+    </div>
+    <div class="mt-3 d-none" id="backCollect">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <button class="btn btn-secondary" onclick="clickTab('tabCollect')"><i class="bi bi-arrow-left"></i> Back</button>
+            </div>
+            <div class="col-md-4 col-sm-12 text-center">
+                <span class="fullNameHead btn" style="cursor: auto;">Name: <span id="fullNameHead"></span></span>
+            </div>
+            <div class="col-md-4 col-sm-12 float-end">
+                <div class="row">
+                    <div class="col-6 pt-2 text-end"><label for="">Filter Year: </label></div>
+                    <div class="col-6 ps-2">
+                        <select id="yearFilter" class="form-select">
+                            <% var yearNow = new Date().getFullYear(); %>
+                            <option value="0">All Times</option>
+                            <% for(let i=0; i<5; i++) { %>
+                                <option value="<%- yearNow - i %>"><%- yearNow - i %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" class="py-4"></div>
+    <div style="width: 100%; margin-top: 10%;" class="text-center d-none" id="loader">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+</div>
+<div class="modal fade" id="imgModal" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="imgModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="imgModal">Photo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="imgBodyModal">
+                <img src="" id="imgDisplay" style="max-width: 900px;" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function clickTab(id) {
+        clearFilterYear();
+        $('#backCollect').addClass('d-none');
+        $('.headerTabText').css('border-color', '#D9D9D9');
+        $('.headerTabText').removeClass('tabActive');
+        $('#'+id).css('border-color', '#1890FF');
+        if(id == 'tabBin') {
+            loadBinReport();
+        } else if(id == 'tabGarbage') {
+            loadGarbageReport();
+        } else {
+            loadCollectReport();
+        }
+    } 
+
+    function clearFilterYear() {
+        $("#yearFilter option[value='0']")[0].selected = true;
+    }
+
+    function loadBinReport() {
+        $('#tabBin').addClass('tabActive');
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/report/getBinReport",
+            method: "post",
+        }).done(function (res) {
+            $('#content').html(res);
+            setTimeout(function(){
+                $('#content').removeClass('d-none');
+                $('#loader').addClass('d-none');
+            }, 100);
+        });
+    }
+
+    function loadGarbageReport() {
+        $('#tabGarbage').addClass('tabActive');
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/report/getGarbageReport",
+            method: "post",
+        }).done(function (res) {
+            $('#content').html(res);
+            setTimeout(function(){
+                $('#content').removeClass('d-none');
+                $('#loader').addClass('d-none');
+            }, 100);
+        });
+    }
+
+    function loadCollectReport() {
+        clearFilterYear();
+        $('#tabCollect').addClass('tabActive');
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/report/getCollectReport",
+            method: "post",
+        }).done(function (res) {
+            $('#content').html(res);
+            setTimeout(function(){
+                $('#content').removeClass('d-none');
+                $('#loader').addClass('d-none');
+            }, 100);
+        });
+    }
+
+    function modalImage(path) {
+        $('#imgDisplay').attr("src", path);
+        $('#imgModal').modal('show');
+    }
+
+    loadBinReport();
+
+    $('#yearFilter').on('change', function() {
+        $('#loader').removeClass('d-none');
+        $('#content').addClass('d-none');
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/collect/getGraph",
+            method: "post",
+            data: JSON.stringify({
+                id: $('#userIdNow').val(),
+                year: $('#yearFilter').val()
+            }),
+        }).done(function (res) {
+            $('#content').html(res);
+            setTimeout(function(){
+                $('#backCollect').removeClass('d-none');
+                $('#content').removeClass('d-none');
+                $('#loader').addClass('d-none');
+            }, 100);
+        });
+    });
+    
+</script>
+
+<%- include('../template/footer'); %>

@@ -1,0 +1,62 @@
+<style>
+  .navbar-brand, .dropdown-item {
+    color: #10743B;
+  }
+  .navbar-brand:hover, .dropdown-item:hover {
+    color: rgb(20, 146, 74);
+  }
+  .dropdown-item:active {
+    color: #10743B;
+    background-color: #E8FCDB;
+  }
+  .dropdown-item > .text-secondary {
+    background-color: gainsboro !important  ;
+  }
+  .bgNav {
+    background-color: #E8FCDB;
+  }
+</style>
+<nav class="navbar navbar-white bgNav fixed-top shadow rounded">
+    <div class="container-fluid ps-4">
+      <a class="navbar-brand" href="">
+        <span class="d-none d-sm-block ms-4">
+          <img src="static/images/logo.png" height="35px" alt="">
+          <img src="static/images/logo_name.png" height="30px" alt="">
+        </span>
+        <% if(role == 0) { %>
+        <span class="d-block d-sm-none">
+          <img src="static/images/logo.png" height="35px" alt="">
+        </span>
+        <% } %>
+      </a>
+      <div class="d-flex">
+        <% if(role != 0) { %>
+          <a class="navbar-brand" style="font-size: 18px;" href=""><i class="bi bi-house-door" style="font-size: 23px;"></i> Home</a>
+          <div class="d-none d-sm-block" style="width: 10px;"></div>
+          <a class="navbar-brand" style="font-size: 18px;" href="collect"><i class="bi bi-box" style="font-size: 23px;"></i> Collect</a>
+          <% if(role == 1) { %>
+            <div class="d-none d-sm-block" style="width: 10px;"></div>
+            <a class="navbar-brand" style="font-size: 18px;" href="report"><i class="bi bi-file-earmark-text" style="font-size: 23px;"></i> Report</a>
+          <% } else if(role == 2) { %>
+            <div class="d-none d-sm-block" style="width: 10px;"></div>
+            <a class="navbar-brand" style="font-size: 18px;" href="collect/report"><i class="bi bi-file-earmark-text" style="font-size: 23px;"></i> Report</a>
+          <% } %>
+          <div class="d-none d-sm-block" style="width: 10px;"></div>
+          <div class="dropdown">
+            <div class="navbar-brand text-center" id="dropdownMenu2" style="width: 100%; cursor: pointer;" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle" style="font-size: 23px;"></i>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu2">
+              <li><a class="dropdown-item" href="user">Profile</a></li>
+              <li><a class="dropdown-item" href="user/changePassword">Change Password</a></li>
+              <li><a class="dropdown-item" href="logout">Logout</a></li>
+            </ul>
+          </div>
+        <% } else { %>
+          <a class="navbar-brand" style="font-size: 18px;" href="login">Login</a>
+        <% } %>
+        <div class="d-none d-sm-block" style="width: 30px;"></div>
+      </div>
+    </div>
+  </nav>
+  <div style="height: 56px;" id="spaceDiv"></div>

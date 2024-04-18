@@ -1,0 +1,182 @@
+<style>
+    .inputFile {
+        width: auto;
+        height: 180px;
+        border: 2px dotted #3D9700;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 30px;
+    }
+    .rm {
+        cursor: pointer;
+        color: #EF2305;
+        display: inline-block;
+        margin: -10px -16px;
+        font-size: 22px;
+        line-height: 0px;
+        background-color: #FDDEDA;
+        border-radius: 15px;
+        width: auto;
+        padding: 4px 3px 2px 3px;
+    }
+    .rm:hover {
+        background-color: #ffd1cb;
+    }
+    .preview {
+        display: flex;
+        justify-content: center;
+        padding-right: 10px;
+    }
+    .imgPreview {
+        display: flex;
+        align-items: flex-start;
+        border: 2px solid #D9D9D9;
+        padding: 13px 18px 13px 13px;
+        border-radius: 5px;
+    }
+    .header {
+        display:flex;
+        flex-direction:row;
+        align-items: center;
+    }
+    .headerText {
+        flex-grow: 0;
+        color: #3D9700;
+        font-size: 22px;
+    }
+
+    .headerLine {
+        flex-grow: 1;
+        height: 2px;
+        margin-left: 5px;
+        background-color: #3D9700;
+    }
+    .bi-zoom-in {
+        color: #3D9700;
+    }
+    .textAlert {
+        color: #E91312;
+    }
+    .textAlertImg {
+        font-size: 12px;
+        line-height: 40px;
+    }
+</style>
+<div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5"><i class="bi bi-zoom-in"></i> Found Garbage</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="foundGarbageForm">
+                <div class="row">
+                    <div class="header">
+                        <div class="headerText">Detail</div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="latitude" value="<%- lat %>" required disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="longitude" value="<%- lon %>" required disabled>
+                        </div>
+                    </div>
+                    <div class="col-12"> 
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description <sup style="color: #E91312;">*</sup></label>
+                            <textarea class="form-control" placeholder="Ex. จุดที่พบขยะอยู่ที่หาดบางแสนใกล้กับ..." id="description" maxlength="150" required></textarea>
+                        </div>
+                    </div>
+                    <div class="header">
+                        <div class="headerText">Photo <span class="textAlert textAlertImg">*1 photo of area garbage found</span></div>
+                    </div>
+                    <div class="col-12">
+                        <input type="file" id="imageFound" class="d-none" accept=".png, .jpeg, .jpg, .webp">
+                        <div id="preview" class="preview d-none">
+                            <span class="imgPreview">
+                                <img src="" id="imgPreview" alt="" style="height: 150px; max-width: 290px;">
+                                <span class="rm"><i class="bi bi-x"></i></span>
+                            </span>
+                        </div>
+                        <div class="inputFile p-2" id="inputFile" onclick="document.getElementById('imageFound').click()">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 120px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="d-none" id="btnAddBin"></button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('btnAddBin').click()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.rm').click(function(e) {
+        $("#inputFile").removeClass("d-none");
+        $("#preview").addClass("d-none");
+        $('#imageFound').val(null);
+        document.getElementById('imgPreview').src = "";
+    });
+
+    $('#imageFound').change(function (e) {
+        $("#preview").removeClass("d-none");
+        $("#inputFile").addClass("d-none");
+        document.getElementById('imgPreview').src = window.URL.createObjectURL(this.files[0]);
+    });
+
+    $('#description').on('input',function (e) {
+        if($('#description').val() == "") {
+            $("#description").addClass("is-invalid");
+        } else {
+            $("#description").removeClass("is-invalid");
+        }
+    });
+
+    $('#foundGarbageForm').submit(async function (e) {
+        e.preventDefault()
+        var myFiles = document.getElementById('imageFound').files
+        var formData = new FormData();
+        var lat = $('#latitude').val();
+        var lon = $('#longitude').val();
+        var description = $('#description').val();
+        if(myFiles.length != 1) {
+            $("#inputFile").css('border-color', '#E91312');
+            return;
+        }
+
+        Object.keys(myFiles).forEach(key => {
+            formData.append(myFiles.item(key).name, myFiles.item(key))
+        })
+
+        formData.append("lat", lat);
+        formData.append("lon", lon);
+        formData.append("description", description);
+
+        var response = await fetch(baseURL + '/garbage/addFoundGarbage', {
+            method: 'POST',
+            body: formData
+        })
+
+        var res = await response.json();
+        // console.log(res.status);
+
+        if(res.status == 1) {
+            $('#mainModal').modal('hide');
+            $('#mainModal').html('');
+            location.reload();
+        } else {
+            alert(res.msg);
+        }
+    })
+
+</script>

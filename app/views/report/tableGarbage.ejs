@@ -1,0 +1,168 @@
+<style>
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+        border-color: #e9e9e9 !important;
+    }
+    th {
+        font-weight: normal !important;
+        border-color: #e9e9e9 !important;
+    }
+    .inputSearch {
+        border-radius: 5px;
+    }
+    .btnImg {
+        background-color: #e8fcdbc7; 
+        color: #3D9700;
+    }
+    .btnImg:hover {
+        background-color: #e8fcdb; 
+        color: #3D9700;
+    }
+    .textType {
+        display: inline-block; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        max-width: 13ch;
+    }
+    .imgTable {
+        width: 150px;
+        height: 90px;
+        object-fit: cover;
+        cursor: zoom-in;
+    }
+    .iconBg {
+        background-color: #ffffff4b; height: 55px;
+    }
+    .levelNum {
+        font-size: 40px; 
+        line-height: 50px; 
+        color: white;
+    }
+    .levelName {
+        font-size: 12px; 
+        margin-top: -5px; 
+        color: white;
+    }
+</style>
+<div class="row g-2">
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="card d-flex flex-row px-4 py-3" style="background-color: #AB0000;">
+            <div class="mt-1 px-2 rounded iconBg">
+                <i class="bi bi-emoji-angry" style="font-size: 40px; color: white;"></i>
+            </div>
+            <div class="ps-4">
+                <div class="levelNum"><%- countLevel.hard %></div>
+                <div class="levelName">Hard Level</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="card d-flex flex-row px-4 py-3" style="background-color: #F6CC50;">
+            <div class="mt-1 px-2 rounded iconBg">
+                <i class="bi bi-emoji-neutral" style="font-size: 40px; color: white;"></i>
+            </div>
+            <div class="ps-4">
+                <div class="levelNum"><%- countLevel.medium %></div>
+                <div class="levelName">Middle Level</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="card d-flex flex-row px-4 py-3" style="background-color: #01AE54;">
+            <div class="mt-1 px-2 rounded iconBg">
+                <i class="bi bi-emoji-smile" style="font-size: 40px; color: white;"></i>
+            </div>
+            <div class="ps-4">
+                <div class="levelNum"><%- countLevel.easy %></div>
+                <div class="levelName">Easy Level</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="overflow-x: auto;" class="mt-3">
+    <table class="table" id="tableGarbage">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th class="text-center">Before</th>
+                <th class="text-center">Pickup</th>
+                <th class="text-center">Shoot</th>
+                <th class="text-center">After</th>
+                <th class="text-start">Waste Type</th>
+                <th class="text-center">Longitude</th>
+                <th class="text-center">Latitude</th>
+                <th class="text-center">Create Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% if(garbageData.length > 0) {
+            for (let i = 0; i < garbageData.length; i++) {  %>
+                <tr class="align-middle">
+                    <td class="text-center py-5"><%- i+1 %></td>
+                    <td class="text-center"> 
+                        <img src="uploads/garbages/<%- garbageData[i].img_before %>" alt="" class="imgTable" onclick="modalImage('uploads/garbages/<%- garbageData[i].img_before %>')">
+                    </td>
+                    <td class="text-center">
+                        <img src="uploads/garbages/<%- garbageData[i].img_pickup %>" alt="" class="imgTable" onclick="modalImage('uploads/garbages/<%- garbageData[i].img_pickup %>')">
+                    </td>
+                    <td class="text-center">
+                        <img src="uploads/garbages/<%- garbageData[i].img_shoot %>" alt="" class="imgTable" onclick="modalImage('uploads/garbages/<%- garbageData[i].img_shoot %>')">
+                    </td>
+                    <td class="text-center">
+                        <img src="uploads/garbages/<%- garbageData[i].img_after %>" alt="" class="imgTable" onclick="modalImage('uploads/garbages/<%- garbageData[i].img_after %>')">
+                    </td>
+                    <td class="text-start px-3" data-toggle="tooltip" data-placement="top" title="<%- garbageData[i].type %>"><span class="textType"><%- garbageData[i].type %></span></td>
+                    <td class="text-center"><%- garbageData[i].longitude %></td>
+                    <td class="text-center"><%- garbageData[i].latitude %></td>
+                    <td id="date<%- i+1 %>" class="text-center"><%- new Date(garbageData[i].createdate).toLocaleDateString('en-GB') %></td>
+                </tr>
+        <%  }
+        } else { %>
+            <tr>
+                <td colspan="10" class="text-center text-secondary">No Data</td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#tableGarbage").DataTable({
+            dom: 'fBtp',
+            buttons: [{
+                extend: 'excel',
+                filename: 'garbage_report',
+                title: 'garbage report',
+                exportOptions: {
+                    columns: [0, 5, 6, 7, 8]
+                },
+            }],
+            columnDefs: [{
+                orderable: false,
+                targets: [1, 2, 3, 4, 5]
+            }],
+            pageLength : 5,
+            // order: [
+            //     [0, "asc"]
+            // ], 
+            language: {
+                sSearch: "",
+                searchPlaceholder: "Search"
+            }
+        });
+        $('.buttons-excel').addClass('btn btn-success');
+        $('.buttons-excel').html('<i class="bi bi-file-earmark-excel"></i> Excel');
+        $('.tableBin_filter').addClass('form-horizontal');
+        $('input[type=search]').addClass('form-control');
+        $('input[type=search]').css('width', '250px');
+    });
+</script>

@@ -1,0 +1,100 @@
+<%- include('./template'); %>
+    <div class="container-fluid">
+        <div class="row pt-5">
+            <div class="col-sm-12 col-md-6 ps-5 pt-5 d-none d-sm-block" id="projectName" style="color: white;">
+                <div class="fs-1 ps-5">Project of</div>
+                <div class="ps-5 projectName">Waste Map</div>
+                <div class="ps-5 projectName">Management</div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="d-flex justify-content-center">
+                    <div class="shadow mt-5 py-5 px-4 cardForm">
+                        <h3 class="text-center pb-4 text-head">Create Account</h3>
+                        <form id="registerForm">
+                            <div class="alert alert-danger d-none" id="msg" role="alert"></div>
+                            <div class="row g-2">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="mb-3"><input type="text" class="form-control" id="fname" placeholder="First name" pattern="^[^\s]+(\s+[^\s]+)*$" maxlength="100" required></div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="mb-3"><input type="text" class="form-control" id="lname" placeholder="Last name" pattern="^[^\s]+(\s+[^\s]+)*$" maxlength="100" required></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" id="email" placeholder="Email" maxlength="100"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control password" id="password" placeholder="Password" minlength="6" maxlength="30" required>
+                                    <span class="input-group-text showPass"><i class="bi bi-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control password" id="cfPassword" placeholder="Confirm Password" minlength="6" maxlength="30" required>
+                                    <span class="input-group-text showPass"><i class="bi bi-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" id="btnRegis" class="btn fs-5 btnSubmit">Sign Up 
+                                    <div class="spinner-border spinner-border-sm d-none" id="waiting" style="color: #2A6800;" role="status"><span class="visually-hidden">Loading...</span></div>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3 msgAccount">Have an account? <a class="linkPage" href="login">Sign in</a> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#registerForm').submit(function (e) {
+            e.preventDefault();
+            if($('#password').val() != $('#cfPassword').val()) {
+                $('#msg').removeClass('d-none');
+                $('#msg').html("Passwords not match");
+                return;
+            }
+            $('#btnRegis').addClass('disabled');
+            $('#waiting').removeClass('d-none');
+            $.ajax({
+                contentType: 'application/json',
+                url: baseURL + "/register",
+                method: "post",
+                data: JSON.stringify({
+                    fname: $('#fname').val(),
+                    lname: $('#lname').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                }),
+            }).done(function (res) {
+                if (res.status == 1) {
+                    location.href = baseURL;
+                } else {
+                    $('#btnRegis').removeClass('disabled');
+                    $('#waiting').addClass('d-none');
+                    $('#msg').removeClass('d-none');
+                    $('#msg').html(res.msg);
+                }
+            });
+        });
+        $('.showPass').click(function (e) {
+            var att = $('#password').attr('type');
+            if (att == 'password') {
+                $('#password').attr('type', 'text');
+                $('#cfPassword').attr('type', 'text');
+                $('.showPass').html('<i class="bi bi-eye"></i>')
+            } else {
+                $('#password').attr('type', 'password');
+                $('#cfPassword').attr('type', 'password');
+                $('.showPass').html('<i class="bi bi-eye-slash"></i>')
+            }
+        });
+        
+        $('.projectName').click(function(e) {
+            window.location.href = "";
+        })
+    </script>
+    <%- include('../template/footer'); %>

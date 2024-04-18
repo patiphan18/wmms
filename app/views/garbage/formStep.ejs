@@ -1,0 +1,468 @@
+<style>
+    .inputFile {
+        width: auto;
+        height: 178px;
+        border: 2px dotted #3D9700;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 30px;
+        padding-top: 30px;
+    }
+
+    .rm {
+        cursor: pointer;
+        color: #EF2305;
+        display: inline-block;
+        margin: -15px;
+        font-size: 22px;
+        line-height: 0px;
+        background-color: #FDDEDA;
+        border-radius: 15px;
+        width: auto;
+        padding: 4px 3px 2px 3px;
+    }
+    .rm:hover {
+        background-color: #ffd1cb;
+    }
+
+    .preview {
+        display: flex;
+        justify-content: center;
+        padding-right: 10px;
+    }
+    .imgPreview {
+        display: flex;
+        align-items: flex-start;
+        border: 2px solid #D9D9D9;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .garbageImg {
+        width: 100%; 
+        height: 150px; 
+        object-fit: cover;
+    }
+
+    .tabActive {
+        border-bottom: 3px solid #1890FF;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .headerText {
+        flex-grow: 0;
+        color: #3D9700;
+        font-size: 18px;
+    }
+
+    .headerLine {
+        flex-grow: 1;
+        height: 2px;
+        margin-left: 5px;
+        background-color: #3D9700;
+    }
+
+    .form-check-input,
+    .form-check-label {
+        cursor: pointer;
+    }
+    .bi-bar-chart-steps {
+        color: #3D9700;
+    }
+    .imgDetail {
+        font-size: 14px;
+    }
+    .textAlert {
+        color: #E91312;
+    }
+    .textAlertImg {
+        font-size: 12px;
+        line-height: 40px;
+    }
+</style>
+<div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5"><i class="bi bi-bar-chart-steps"></i> Garbage Step</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-3">
+            <form id="foundGarbageForm">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center py-2 tabActive" id="tab1">
+                            <div style="margin-left: auto;" id="headActive1">
+                                <i class="bi bi-1-circle-fill" style="color: #1890FF; font-size: 20px;"></i>
+                                <span>Garbage Collection Step</span>
+                            </div>
+                            <div style="margin-left: auto;" id="headNoActive1" class="d-none text-secondary">
+                                <i class="bi bi-1-circle" style="font-size: 20px;"></i>
+                                <span>Garbage Collection Step</span>
+                            </div>
+                            <div style="margin-left: auto; margin-top: 5px;"><i class="bi bi-chevron-right"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center py-2" id="tab2">
+                            <div style="margin-left: auto;" id="headActive2" class="d-none">
+                                <i class="bi bi-2-circle-fill" style="color: #1890FF; font-size: 20px;"></i>
+                                <span>Photo Detail</span>
+                            </div>
+                            <div style="margin-left: auto;" id="headNoActive2" class="text-secondary">
+                                <i class="bi bi-2-circle" style="font-size: 20px;"></i>
+                                <span>Photo Detail</span>
+                            </div>
+                            <div style="margin-left: auto; margin-top: 5px;"><i class="bi bi-chevron-right"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center py-2" id="tab3">
+                            <div id="headActive3" class="d-none">
+                                <i class="bi bi-3-circle-fill" style="color: #1890FF; font-size: 20px;"></i>
+                                <span>Review</span>
+                            </div>
+                            <div id="headNoActive3" class="text-secondary">
+                                <i class="bi bi-3-circle" style="font-size: 20px;"></i>
+                                <span>Review</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2" id="inputStep1">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Waste Type <sup style="color: #E91312;">*</sup></label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="general"
+                                    value="General Waste">
+                                <label class="form-check-label" for="general"><img src="" id="imgBin1" width="17px" alt=""> General Waste</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="compostable"
+                                    value="Compostable Waste">
+                                <label class="form-check-label" for="compostable"><img src="" id="imgBin2" width="17px" alt=""> Compostable Waste</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="recycle"
+                                    value="Recycle Waste">
+                                <label class="form-check-label" for="recycle"><img src="" id="imgBin3"  width="17px" alt=""> Recycle Waste</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="type" type="checkbox" id="hazardous"
+                                    value="Hazardous Waste">
+                                <label class="form-check-label" for="hazardous"><img src="" id="imgBin4" width="17px" alt=""> Hazardous Waste</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="latitude" value="<%- lat %>" required
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="longitude" value="<%- lon %>" required
+                                disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mt-2" id="inputStep2" style="display: none;">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="header">
+                            <div class="headerText">
+                                Before
+                                <span class="textAlert textAlertImg">*Photo of area before pickup</span>
+                            </div>
+                        </div>
+                        <input type="file" id="image1" class="d-none btnInput" accept=".png, .jpeg, .jpg, .webp">
+                        <div id="preview1" class="preview d-none">
+                            <div class="imgPreview d-flex justify-content-center">
+                                <img src="" alt="" class="garbageImg" id="imgPreview1"><span class="rm" id="rm1"><i class="bi bi-x"></i></span>
+                            </div>
+                        </div>
+                        <div class="inputFile" id="inputFile1" onclick="document.getElementById('image1').click()">
+                            <i class="bi bi-cloud-arrow-up"
+                                style="font-size: 90px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="header">
+                            <div class="headerText">Pickup
+                                <span class="textAlert textAlertImg">*Photo of pickup garbage</span>
+                            </div>
+                        </div>
+                        <input type="file" id="image2" class="d-none btnInput" accept=".png, .jpeg, .jpg, .webp">
+                        <div id="preview2" class="preview d-none">
+                            <div class="imgPreview d-flex justify-content-center">
+                                <img src="" alt="" class="garbageImg" id="imgPreview2"><span class="rm" id="rm2"><i class="bi bi-x"></i></span>
+                            </div>
+                        </div>
+                        <div class="inputFile" id="inputFile2" onclick="document.getElementById('image2').click()">
+                            <i class="bi bi-cloud-arrow-up"
+                                style="font-size: 90px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="header">
+                            <div class="headerText">
+                                Shoot
+                                <span class="textAlert textAlertImg">*Photo of shooting garbage</span>
+                            </div>
+                        </div>
+                        <input type="file" id="image3" class="d-none btnInput" accept=".png, .jpeg, .jpg, .webp">
+                        <div id="preview3" class="preview d-none">
+                            <div class="imgPreview d-flex justify-content-center">
+                                <img src="" alt="" class="garbageImg" id="imgPreview3"><span class="rm" id="rm3"><i class="bi bi-x"></i></span>
+                            </div>
+                        </div>
+                        <div class="inputFile" id="inputFile3" onclick="document.getElementById('image3').click()">
+                            <i class="bi bi-cloud-arrow-up"
+                                style="font-size: 90px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="header">
+                            <div class="headerText">
+                                After
+                                <span class="textAlert textAlertImg">*Photo of area after cleaning</span>
+                            </div> 
+                        </div>
+                        <input type="file" id="image4" class="d-none btnInput" accept=".png, .jpeg, .jpg, .webp">
+                        <div id="preview4" class="preview d-none">
+                            <div class="imgPreview d-flex justify-content-center">
+                                <img src="" alt="" class="garbageImg" id="imgPreview4"><span class="rm" id="rm4"><i class="bi bi-x"></i></span>
+                            </div>
+                        </div>
+                        <div class="inputFile" id="inputFile4" onclick="document.getElementById('image4').click()">
+                            <i class="bi bi-cloud-arrow-up"
+                                style="font-size: 90px; color: #3D9700; line-height: 0px;"></i>
+                            <div style="font-size: 16px;">Click to upload photo</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2" id="inputStep3" style="display: none;">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="customRange3" class="form-label">
+                                Difficult Level
+                                <sup style="color: #E91312;">*</sup>
+                            </label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="difficult" id="difficult1" value="1"
+                                    required>
+                                <label class="form-check-label" for="difficult1">Easy</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="difficult" id="difficult2" value="2">
+                                <label class="form-check-label" for="difficult2">Medium</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="difficult" id="difficult3" value="3">
+                                <label class="form-check-label" for="difficult3">Hard</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                Description
+                                <sup style="color: #E91312;">*</sup>
+                            </label>
+                            <textarea class="form-control" placeholder="Ex. เก็บขยะไปจำนวนมาก..." id="description" required maxlength="150"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="foundID" value="<%- foundID %>" required>
+                <button type="submit" class="d-none" id="btnAddBin"></button>
+            </form>
+        </div>
+        <div class="modal-footer" id="footer1">
+            <button type="button" id="btnNext2" class="btn btn-primary px-4 disabled"
+                onclick="nextStep(2)">Next</button>
+        </div>
+        <div class="modal-footer" id="footer2" style="display: none;">
+            <button type="button" class="btn btn-secondary" onclick="backStep(1)">Previous</button>
+            <button type="button" class="btn btn-primary px-4 disabled" id="btnNext3"
+                onclick="nextStep(3)">Next</button>
+        </div>
+        <div class="modal-footer" id="footer3" style="display: none;">
+            <button type="button" class="btn btn-secondary" onclick="backStep(2)">Previous</button>
+            <button type="button" class="btn btn-primary px-4"
+                onclick="document.getElementById('btnAddBin').click()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function loadIconBin() {
+        $('#imgBin1').attr('src', baseURL + '/static/images/bin1.png');
+        $('#imgBin2').attr('src', baseURL + '/static/images/bin2.png');
+        $('#imgBin3').attr('src', baseURL + '/static/images/bin3.png');
+        $('#imgBin4').attr('src', baseURL + '/static/images/bin4.png');
+    }
+
+    loadIconBin();
+
+    $('input[name=type]').change(function () {
+        var isCheck = 0;
+        $('input[name=type]').each(function () {
+            if (this.checked) {
+                $("#btnNext2").removeClass('disabled');
+                isCheck = 1;
+            }
+        });
+        if (isCheck == 0) $("#btnNext2").addClass("disabled");
+    });
+
+    function nextStep(step) {
+        $('#tab' + (step - 1)).removeClass('tabActive');
+        $('#footer' + (step - 1)).css('display', 'none');
+        $('#inputStep' + (step - 1)).css('display', 'none');
+
+        $('#tab' + step).addClass('tabActive');
+        $('#footer' + step).css('display', '');
+        $('#inputStep' + step).css('display', '');
+
+        $('#headActive' + (step)).removeClass('d-none');
+        $('#headNoActive' + (step)).addClass('d-none');
+        $('#headActive' + (step - 1)).addClass('d-none');
+        $('#headNoActive' + (step - 1)).removeClass('d-none');
+    }
+    function backStep(step) {
+        $('#tab' + (step + 1)).removeClass('tabActive');
+        $('#footer' + (step + 1)).css('display', 'none');
+        $('#inputStep' + (step + 1)).css('display', 'none');
+
+        $('#tab' + step).addClass('tabActive');
+        $('#footer' + step).css('display', '');
+        $('#inputStep' + step).css('display', '');
+
+        $('#headActive' + (step)).removeClass('d-none');
+        $('#headNoActive' + (step)).addClass('d-none');
+        $('#headActive' + (step + 1)).addClass('d-none');
+        $('#headNoActive' + (step + 1)).removeClass('d-none');
+    }
+    function getImageLength() {
+        var elm = document.getElementsByClassName('btnInput');
+        var count = 0;
+        for (let i = 0; i < elm.length; i++) {
+            let img = elm[i].files;
+            if (img[0]) {
+                count++;
+            }
+        }
+        return count;
+    }
+    $('.rm').click(function (e) {
+        var id = this.id;
+        id = id[id.length - 1];
+        $("#inputFile" + id).removeClass("d-none");
+        $("#preview" + id).addClass("d-none");
+        $('#image' + id).val(null);
+        document.getElementById('imgPreview' + id).src = "";
+        $("#btnNext3").addClass('disabled');
+    });
+
+    $('.btnInput').change(function (e) {
+        var id = this.id;
+        id = id[id.length - 1];
+        $("#preview" + id).removeClass("d-none");
+        $("#inputFile" + id).addClass("d-none");
+        document.getElementById('imgPreview' + id).src = window.URL.createObjectURL(this.files[0])
+        var count = getImageLength();
+        if (count == 4) $("#btnNext3").removeClass('disabled');
+    });
+    $('#foundGarbageForm').submit(async function (e) {
+        e.preventDefault();
+        var image1 = document.getElementById('image1').files
+        var image2 = document.getElementById('image2').files
+        var image3 = document.getElementById('image3').files
+        var image4 = document.getElementById('image4').files
+        var formData = new FormData();
+        var lat = $('#latitude').val();
+        var lon = $('#longitude').val();
+        var type = "";
+        var difficult = $('input[name=difficult]:checked').val();
+        var description = $('#description').val();
+        var foundID = $('#foundID').val();
+        if (image1.length != 1 || image2.length != 1 || image3.length != 1 || image4.length != 1) {
+            $("#inputFile").css('border-color', '#E91312');
+            return;
+        }
+        $('input[name=type]').each(function () {
+            if (this.checked) type += $(this).val() + "-";
+        });
+        type = type.substring(0, type.length - 1);
+
+        Object.keys(image1).forEach(key => {
+            formData.append('image1', image1.item(key))
+        })
+        Object.keys(image2).forEach(key => {
+            formData.append('image2', image2.item(key))
+        })
+        Object.keys(image3).forEach(key => {
+            formData.append('image3', image3.item(key))
+        })
+        Object.keys(image4).forEach(key => {
+            formData.append('image4', image4.item(key))
+        })
+
+        formData.append("lat", lat);
+        formData.append("lon", lon);
+        formData.append("type", type);
+        formData.append("difficult", difficult);
+        formData.append("description", description);
+        formData.append("foundID", foundID);
+
+        var response = await fetch(baseURL + '/garbage/addGarbageStep', {
+            method: 'POST',
+            body: formData
+        })
+        // console.log(response.status)
+        var res = await response.json();
+        if (res.status == 1) {
+            $('#mainModal').modal('hide');
+            $('#mainModal').html('');
+            Swal.fire({
+                title: "Success",
+                text: "Throw garbage success",
+                icon: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "OK"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });
+        } else {
+            $('#mainModal').modal('hide');
+            $('#mainModal').html('');
+            Swal.fire({
+                title: "Failed",
+                text: "Throw garbage failed",
+                icon: "error",
+                showCancelButton: false,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: "OK"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });
+        }
+
+    });
+</script>

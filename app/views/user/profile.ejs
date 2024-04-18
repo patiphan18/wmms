@@ -1,0 +1,59 @@
+<div class="row mt-2 d-flex justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <form action="" id="formProfile">
+            <div class="row g-2">
+                <div class="col-12 pt-1">Email</div>
+                <div class="col-12">
+                    <input type="text" class="form-control" value="<%- profileData.email %>" disabled>
+                </div>
+                <div class="col-12 pt-1">First Name</div>
+                <div class="col-12">
+                    <input type="text" class="form-control" id="fname" value="<%- profileData.fname %>" pattern="^[^\s]+(\s+[^\s]+)*$" maxlength="100" required>
+                </div>
+                <div class="col-12 pt-1">Last Name</div>
+                <div class="col-12">
+                    <input type="text" class="form-control" id="lname" value="<%- profileData.lname %>" pattern="^[^\s]+(\s+[^\s]+)*$" maxlength="100" required>
+                </div>
+                <div class="col-12 pt-1">Role</div>
+                <div class="col-12">
+                    <input type="text" class="form-control" value="<%- (profileData.role == 2) ? 'Normal User' : 'Admin' %>" disabled>
+                </div>
+                <div class="col-12 text-danger" id="msg"></div>
+                <button type="submit" id="btnProfile" class="btn btn-primary mt-3 py-2">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $("#formProfile").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            contentType: 'application/json',
+            url: baseURL + "/user/updateProfile",
+            method: "post",
+            data: JSON.stringify({
+                fname: $('#fname').val(),
+                lname: $('#lname').val()
+            }),
+        }).done(function (res) {
+            if (res.status == 1) {
+                Swal.fire({
+                    title: "Success",
+                    text: "Update profile success",
+                    icon: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
+                // location.reload();
+            } else {
+                $('#msg').html(res.msg);
+            }
+        });
+    });
+</script>
